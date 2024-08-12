@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_DOMAIN } = process.env;
 
 // 获取token
-export async function generateAccessToken() {
+async function generateAccessToken() {
   const BASE64_ENCODED_CLIENT_ID_AND_SECRET = Buffer.from(
     `${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`
   ).toString('base64');
@@ -60,7 +60,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 }
 
 // 创建订单
-export async function createOrder(cart: any) {
+async function createOrder(cart: any) {
   const accessToken = await generateAccessToken();
   const url = `${PAYPAL_DOMAIN}/v2/checkout/orders`;
   const payload = {
@@ -84,7 +84,7 @@ export async function createOrder(cart: any) {
 }
 
 // 捕获订单
-export async function captureOrder(orderID: string) { 
+async function captureOrder(orderID: string) { 
     const accessToken = await generateAccessToken();
     const url = `${PAYPAL_DOMAIN}/v2/checkout/orders/${orderID}/capture`;
     const response = await fetch(url, {
