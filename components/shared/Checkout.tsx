@@ -3,18 +3,18 @@
 import React, { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-function Message({ content }) {
+function Message({ content }: { content:React.ReactNode}) {
   return <p>{content}</p>;
 }
 
 const initialOptions = {
-  "client-id": "AU2Uy3kFsTu4mWmVkayVAnicpyhx8tuzAR_BoxEXjVbJfwkkLRBS9HqpGstRC4GQJi1rOd-HoS92IEfn", // 使用环境变量
-  "enable-funding": "venmo",
+  "clientId": "AU2Uy3kFsTu4mWmVkayVAnicpyhx8tuzAR_BoxEXjVbJfwkkLRBS9HqpGstRC4GQJi1rOd-HoS92IEfn", // 使用环境变量
+  "enableFunding": "venmo",
   country: "US",
   currency: "USD",
   components: "buttons",
-  "data-page-type": "product",
-  "data-sdk-integration-source": "create-react-app"
+  "dataPageType": "product",
+  "dataSdkIntegrationSource": "create-react-app"
 };
 
 const Checkout = () => {
@@ -43,13 +43,16 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error('Error creating order:', error);
-      setMessage(`Error creating order: ${error.message}`);
+      setMessage(`Error creating order: ${error}`);
       return null;
     }
   };
 
+  interface OnApproveData { orderID: string; }
+  interface OnApproveActions { restart: () => void; }
+
   // PayPal 按钮的订单批准处理函数
-  const onApprove = async (data, actions) => {
+  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
     const { orderID } = data;
     if (!orderID) {
       setMessage('Order ID is missing');
@@ -71,11 +74,11 @@ const Checkout = () => {
       setMessage(`Transaction completed successfully: ${captureData.status}`);
     } catch (error) {
       console.error('Error in onApprove:', error);
-      if (error.message === 'INSTRUMENT_DECLINED') {
-        // 调用 PayPal 重启支付流程
-        return actions.restart();
-      }
-      setMessage(`Transaction failed: ${error.message}`);
+      // if (error.message === 'INSTRUMENT_DECLINED') {
+      //   // 调用 PayPal 重启支付流程
+      //   return actions.restart();
+      // }
+      setMessage(`Transaction failed: ${error}`);
     }
   };
 

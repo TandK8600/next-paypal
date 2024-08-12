@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { Buffer } from 'buffer';
+import { NextResponse } from 'next/server';
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_DOMAIN } = process.env;
 
@@ -33,29 +33,29 @@ async function handleResponse(response: Response) {
 }
 
 // 对外暴露的API路由 API route to create an order
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: Request) {
   try {
     // 根据请求路径区分不同的操作
     if (req.url === '/api/paypal/createOrder') {
       // 解析请求体中的购物车数据
-      const { cart } = req.body;
+      const { cart } = await req.json();
       const { jsonResponse, httpStatusCode } = await createOrder(cart);
-      res.status(httpStatusCode).json(jsonResponse);
+      return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } else if (req.url === '/api/paypal/captureOrder') {
       // 解析请求体中的订单 ID
-      const { orderID } = req.body;
+      const { orderID } = await req.json();
       if (!orderID) {
-        return res.status(400).json({ error: 'Order ID is required' });
+        return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
       }
       const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
-      res.status(httpStatusCode).json(jsonResponse);
+      return NextResponse.json(jsonResponse, { status: httpStatusCode });
     } else {
       // 如果路径不匹配，返回 404 Not Found
-      res.status(404).json({ error: 'Not Found' });
+      return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     }
   } catch (error) {
     console.error('An error occurred:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
