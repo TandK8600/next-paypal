@@ -8,13 +8,10 @@ function Message({ content }: { content:React.ReactNode}) {
 }
 
 const initialOptions = {
-  "clientId": "AU2Uy3kFsTu4mWmVkayVAnicpyhx8tuzAR_BoxEXjVbJfwkkLRBS9HqpGstRC4GQJi1rOd-HoS92IEfn", // 使用环境变量
+  "clientId": process.env.PAYPAL_CLIENT_ID || "test", // 使用环境变量
   "enableFunding": "venmo",
-  country: "US",
-  currency: "USD",
-  components: "buttons",
-  "dataPageType": "product",
-  "dataSdkIntegrationSource": "create-react-app"
+  "buyerCountry": "US",
+  currency: "USD"
 };
 
 const Checkout = () => {
@@ -37,7 +34,7 @@ const Checkout = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        return data.orderID;
+        return data.id;
       } else {
         throw new Error(data.message);
       }
@@ -67,6 +64,7 @@ const Checkout = () => {
         body: JSON.stringify({ orderID })
       });
       const captureData = await response.json();
+      console.log("captureData:", captureData);
       // 检查捕获订单的响应
       if (captureData.error) {
         throw new Error(captureData.error);
@@ -74,11 +72,9 @@ const Checkout = () => {
       setMessage(`Transaction completed successfully: ${captureData.status}`);
     } catch (error) {
       console.error('Error in onApprove:', error);
-      // if (error.message === 'INSTRUMENT_DECLINED') {
-      //   // 调用 PayPal 重启支付流程
-      //   return actions.restart();
-      // }
       setMessage(`Transaction failed: ${error}`);
+      // 调用 PayPal 重启支付流程
+      return actions.restart();
     }
   };
 
