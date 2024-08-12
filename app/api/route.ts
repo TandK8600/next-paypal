@@ -33,12 +33,7 @@ export async function handleResponse(response: Response) {
 }
 
 // 对外暴露的API路由 API route to create an order
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // 检查请求方法
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 根据请求路径区分不同的操作
     if (req.url === '/api/paypal/createOrder') {
