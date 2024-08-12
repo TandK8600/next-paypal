@@ -24,7 +24,7 @@ async function generateAccessToken() {
 }
 
 // 处理响应结果
-export async function handleResponse(response: Response) {
+async function handleResponse(response: Response) {
   const result = await response.json();
   return {
     ...result,
