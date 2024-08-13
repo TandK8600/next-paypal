@@ -1,9 +1,9 @@
-const { PAYPAL_CLIENT_ID, PAYPAL_SECRET, PAYPAL_DOMAIN } = process.env;
+const { NEXT_PUBLIC_PAYPAL_CLIENT_ID, PAYPAL_SECRET, PAYPAL_DOMAIN } = process.env;
 
 
 // 获取token
 export async function generateAccessToken() {
-    const BASE64_ENCODED_CLIENT_ID_AND_SECRET = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
+    const BASE64_ENCODED_CLIENT_ID_AND_SECRET = Buffer.from(`${NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
 
     const response = await fetch(`${PAYPAL_DOMAIN}/v1/oauth2/token`, {
         method: 'POST',

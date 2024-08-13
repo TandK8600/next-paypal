@@ -8,9 +8,8 @@ function Message({ content }: { content:React.ReactNode}) {
 }
 
 const initialOptions = {
-  "clientId": process.env.PAYPAL_CLIENT_ID || "test", // 使用环境变量
+  "clientId": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test", // 使用环境变量
   "enableFunding": "venmo",
-  "buyerCountry": "US",
   currency: "USD"
 };
 
