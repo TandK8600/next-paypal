@@ -40,7 +40,7 @@ export async function createOrder(cart: any) {
     const url = `${PAYPAL_DOMAIN}/v2/checkout/orders`;
     const payload = {
         intent: "CAPTURE",
-        purchase_units: [{ amount: { currency_code: "USD", value: "100" } }],
+        purchase_units: [{ amount: { currency_code: "USD", value: "0.01" } }],
     };
     const response = await fetch(url, {
         headers: {
